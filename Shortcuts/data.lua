@@ -23,16 +23,19 @@ for i=1,(#equipment_list) do
 		local name = disabled_equipment[i].name
 		local newname = "disabled-" .. name
 		disabled_equipment[i].name = newname
+		disabled_equipment[i].localised_name = {"", {"equipment-name." .. name}, " (", {"gui-constant.off"}, ")"}
 		disabled_equipment[i].energy_input = "0kW"
 		if equipment_list[i] == "belt-immunity-equipment" then
 			disabled_equipment[i].energy_source.input_flow_limit = "0kW"
 			disabled_equipment[i].energy_source.buffer_capacity = "0kJ"
 			disabled_equipment[i].energy_source.drain = "1kW"
 		end
+		if not disabled_equipment_item[i] then
+			disabled_equipment_item[i] = util.table.deepcopy(data.raw["item"]["night-vision-equipment"])
+		end
 		disabled_equipment_item[i].name = newname
 		disabled_equipment_item[i].localised_name = {"", {"equipment-name." .. name}, " (", {"gui-constant.off"}, ")"}
 		disabled_equipment_item[i].localised_description = {"item-description." .. name}
-		disabled_equipment[i].localised_name = {"", {"equipment-name." .. name}, " (", {"gui-constant.off"}, ")"}
 		disabled_equipment_item[i].placed_as_equipment_result = newname
 	end
 end
