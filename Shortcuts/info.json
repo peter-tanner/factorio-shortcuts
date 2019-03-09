@@ -1,0 +1,10 @@
+{
+	"name": "Shortcuts",
+	"version": "0.2.0",
+	"factorio_version": "0.17",
+	"title": "Shortcuts",
+	"author": "npc_strider(morley376)",
+	"contact": "",
+	"homepage": "http://steamcommunity.com/id/morley376",
+	"description": "Adds in a shortcut button for the artillery remote, and toggles for night-vision-equipment, belt-immunity-equipment and the player lamp. Suggest any new shortcut ideas to the discussion page."
+}
