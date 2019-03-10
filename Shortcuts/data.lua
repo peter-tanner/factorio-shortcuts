@@ -1,4 +1,5 @@
 require("shortcuts")
+
 data.raw["recipe"]["artillery-targeting-remote"].hidden = true
 local effect = data.raw["technology"]["artillery"].effects
 for i=1,(#effect) do
@@ -34,6 +35,7 @@ for i=1,(#equipment_list) do
 			disabled_equipment_item[i] = util.table.deepcopy(data.raw["item"]["night-vision-equipment"])
 		end
 		disabled_equipment_item[i].name = newname
+		disabled_equipment_item[i].hidden = true
 		disabled_equipment_item[i].localised_name = {"", {"equipment-name." .. name}, " (", {"gui-constant.off"}, ")"}
 		disabled_equipment_item[i].localised_description = {"item-description." .. name}
 		disabled_equipment_item[i].placed_as_equipment_result = newname
@@ -44,3 +46,16 @@ for i=1,(#disabled_equipment),1 do
 	data:extend({disabled_equipment_item[i]})
 	data:extend({disabled_equipment[i]})
 end
+
+local warning = {
+		type = "virtual-signal", -- TODO: placeholder, when removing, remember to remove localised name too!
+		name = "signal-danger",
+		localised_name = {"gui-alert-tooltip.title"},
+		icon = "__core__/graphics/danger-icon.png",
+		icon_size = 64,
+		subgroup = "virtual-signal-color",
+		order = "d[colors]-[9danger]",
+		hidden = true,
+}
+
+data:extend{(warning)}

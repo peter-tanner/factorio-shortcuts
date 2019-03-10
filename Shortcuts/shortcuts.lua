@@ -132,6 +132,73 @@ data:extend(
 			flags = {"icon"}
 		},
 	},
+	{
+		type = "shortcut",
+		name = "big-zoom",
+		order = "a[big-zoom]",
+		technology_to_unlock = "optics",
+		action = "lua",
+		localised_name = {"controls.alt-zoom-out"},
+		toggleable = true,
+		style = "blue",
+		icon =
+		{
+			filename = "__Shortcuts__/graphics/big-zoom-x32-white.png",
+			priority = "extra-high-no-scale",
+			size = 32,
+			scale = 1,
+			flags = {"icon"}
+		},
+		small_icon =
+		{
+			filename = "__Shortcuts__/graphics/big-zoom-x24.png",
+			priority = "extra-high-no-scale",
+			size = 24,
+			scale = 1,
+			flags = {"icon"}
+		},
+		disabled_small_icon =
+		{
+			filename = "__Shortcuts__/graphics/big-zoom-x24-white.png",
+			priority = "extra-high-no-scale",
+			size = 24,
+			scale = 1,
+			flags = {"icon"}
+		},
+	},
+	{
+		type = "shortcut",
+		name = "signal-flare",
+		order = "a[signal-flare]",
+		action = "lua",
+		localised_name = {"", {"technology-name.military"}, " ", {"entity-name.beacon"}, " (", {"description.force"}, " ", {"deconstruction-tile-mode.only"}, ")"},
+		toggleable = true,
+		style = "red",
+		icon =
+		{
+			filename = "__Shortcuts__/graphics/signal-flare-x32-white.png",
+			priority = "extra-high-no-scale",
+			size = 32,
+			scale = 1,
+			flags = {"icon"}
+		},
+		small_icon =
+		{
+			filename = "__Shortcuts__/graphics/signal-flare-x24.png",
+			priority = "extra-high-no-scale",
+			size = 24,
+			scale = 1,
+			flags = {"icon"}
+		},
+		disabled_small_icon =
+		{
+			filename = "__Shortcuts__/graphics/signal-flare-x24-white.png",
+			priority = "extra-high-no-scale",
+			size = 24,
+			scale = 1,
+			flags = {"icon"}
+		},
+	},
 	-- Custom shortcut can be defined as follows:
 	-- {
 	--	 type = "shortcut",
