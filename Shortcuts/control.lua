@@ -3,7 +3,7 @@ local function update_armor(event)
 	power_armor = player.get_inventory(defines.inventory.player_armor)
 	if power_armor and power_armor.valid then
 		if power_armor[1].valid_for_read then
-			if power_armor[1].grid.valid then
+			if power_armor[1].grid and power_armor[1].grid.valid then
 				global.shortcuts_armor[player.index] = power_armor[1].grid
 			end
 		end
