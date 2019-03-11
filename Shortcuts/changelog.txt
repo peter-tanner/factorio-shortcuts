@@ -1,0 +1,35 @@
+---------------------------------------------------------------------------------------------------
+Version: 0.4.0
+Date: 10. 03. 2019
+  Features:
+    - 
+  Bugfixes:
+    - Toggle buttons visually work properly
+    - Using the lamp toggle on a god controller no longer crashes the game
+---------------------------------------------------------------------------------------------------
+Version: 0.3.0
+Date: 10. 03. 2019
+  Features:
+    - Added distress beacon and ultra zoom button
+  Bugfixes:
+    - Fix another equipment grid issue found in playtesting
+---------------------------------------------------------------------------------------------------
+Version: 0.2.2
+Date: 10. 03. 2019
+  Bugfixes:
+    - Fixed issue with gridless armor
+---------------------------------------------------------------------------------------------------
+Version: 0.2.1
+Date: 09. 03. 2019
+  Bugfixes:
+    - Fixed issue with the disabled item equipment generation
+---------------------------------------------------------------------------------------------------
+Version: 0.2.0
+Date: 09. 03. 2019
+  Features:
+    - Added toggle shortcuts for night-vision-equipment, belt-immunity-equipment and the flashlight
+---------------------------------------------------------------------------------------------------
+Version: 0.1.0
+Date: 08. 03. 2019
+  Features:
+    - Added shortcut for the artillery-targeting-remote
