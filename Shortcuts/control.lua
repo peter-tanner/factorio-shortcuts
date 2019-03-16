@@ -14,7 +14,7 @@ local function update_armor(event)
 	end
 end
 
-local function update_state(event, equipment_type)
+local function update_state(event, equipment_type) -- toggles the armor
 	update_armor(event)
 	local grid = global.shortcuts_armor[game.players[event.player_index].index]
 	if grid then
@@ -24,12 +24,14 @@ local function update_state(event, equipment_type)
 				local position = equipment.position
 				local energy = equipment.energy
 				if not (string.sub(equipment.name,1,9) == "disabled-") then
-					grid.take(equipment)
-					local new_equipment = grid.put{name="disabled-" .. name, position=position}
-					if new_equipment and new_equipment.valid then
-						new_equipment.energy = energy
+					if equipment_type ~= "active-defense-equipment" or (equipment_type == "active-defense-equipment" and game.equipment_prototypes["disabled-" .. equipment.name]) then
+						grid.take(equipment)
+						local new_equipment = grid.put{name="disabled-" .. name, position=position}
+						if new_equipment and new_equipment.valid then
+							new_equipment.energy = energy
+						end
+						game.players[event.player_index].set_shortcut_toggled(equipment_type, false)
 					end
-					game.players[event.player_index].set_shortcut_toggled(equipment_type, false)
 				elseif (string.sub(equipment.name,1,9) == "disabled-") then
 					grid.take(equipment)
 					local new_equipment = grid.put{name=(string.sub(name,10,#name)), position=position}
@@ -68,6 +70,8 @@ local function shortcut_type(event)
 		update_state(event, "night-vision-equipment")
 	elseif prototype_name == "belt-immunity-equipment" then
 		update_state(event, "belt-immunity-equipment")
+	elseif prototype_name == "active-defense-equipment" then
+		update_state(event, "active-defense-equipment")
 	elseif prototype_name == "flashlight-toggle" then
 		toggle_light(game.players[event.player_index])
 	elseif prototype_name == "big-zoom" then
@@ -87,44 +91,96 @@ local function shortcut_type(event)
 	end
 end
 
-local function update_inventory(event)
+local function update_inventory(event) -- removes spare remotes
+	local item_prototypes = game.item_prototypes
 	local inventory = game.players[event.player_index].get_inventory(defines.inventory.player_main)
 	if inventory and inventory.valid then
 		inventory.remove("artillery-targeting-remote")
+		inventory.remove("discharge-defense-remote")
+		if item_prototypes["resource-monitor"] then
+			inventory.remove("resource-monitor")
+		end
+		if item_prototypes["outpost-builder"] then
+			inventory.remove("outpost-builder")
+		end
+		if item_prototypes["ion-cannon-targeter"] then
+			inventory.remove("ion-cannon-targeter")
+		end
 	end
 end
 
-local function reset_state(event)
+local function false_shortcuts(player) -- disables things
+	player.set_shortcut_available("night-vision-equipment", false)
+	player.set_shortcut_toggled("night-vision-equipment", false)
+	player.set_shortcut_available("belt-immunity-equipment", false)
+	player.set_shortcut_toggled("belt-immunity-equipment", false)
+	player.set_shortcut_available("active-defense-equipment", false)
+	player.set_shortcut_toggled("active-defense-equipment", false)
+end
+
+local function enable_it(player, equipment, grid, type) -- enables things
+	if grid.valid and equipment.valid then
+		local name = equipment.name
+		local position = equipment.position
+		local energy = equipment.energy
+		player.set_shortcut_available(type, true)
+		player.set_shortcut_toggled(type, true)
+		if (string.sub(equipment.name,1,9) == "disabled-") then
+			grid.take(equipment)
+			local new_equipment = grid.put{name=(string.sub(name,10,#name)), position=position}
+			if new_equipment and new_equipment.valid then
+				new_equipment.energy = energy
+			end								
+		end
+	end
+end
+local function reset_state(event, toggle) -- verifies placement of equipment and armor switching
 	update_armor(event)
 	local player = game.players[event.player_index]
 	local grid = global.shortcuts_armor[game.players[event.player_index].index]
 	if grid then
-		for _, equipment in pairs(grid.equipment) do
-			if equipment.type == "night-vision-equipment" then
-				player.set_shortcut_available("night-vision-equipment", true)
-				player.set_shortcut_toggled("night-vision-equipment", true)
-			elseif equipment.type == "belt-immunity-equipment" then
-				player.set_shortcut_available("belt-immunity-equipment", true)
-				player.set_shortcut_toggled("belt-immunity-equipment", true)
+		local equipment = event.equipment
+		if equipment and toggle == 1 then --place
+			local type = equipment.type
+			if type == "night-vision-equipment" or type == "belt-immunity-equipment" or (type == "active-defense-equipment" and game.equipment_prototypes["disabledinactive-" .. equipment.name] == nil) then
+				for _, equipment in pairs(grid.equipment) do
+					if equipment.valid and equipment.type == type then
+						enable_it(player, equipment, grid, type)
+					end
+				end
 			end
-			if equipment.valid and equipment.type == "night-vision-equipment" or equipment.type == "belt-immunity-equipment" then
-				local name = equipment.name
-				local position = equipment.position
-				local energy = equipment.energy
-				if (string.sub(equipment.name,1,9) == "disabled-") then
-					grid.take(equipment)
-					local new_equipment = grid.put{name=(string.sub(name,10,#name)), position=position}
-					if new_equipment and new_equipment.valid then
-						new_equipment.energy = energy
-					end								
+		elseif equipment and toggle == 2 then --take
+			local type = game.equipment_prototypes[equipment].type
+			local name = game.equipment_prototypes[equipment].name
+			if type == "night-vision-equipment" or type == "belt-immunity-equipment" or type == "active-defense-equipment" then
+				local value = false
+				for _, equipment in pairs(grid.equipment) do
+					if equipment.type == type and equipment.valid then
+						if type ~= "active-defense-equipment" then
+							value = true
+							break
+						elseif type == "active-defense-equipment" and game.equipment_prototypes["disabledinactive-" .. equipment.name] == nil then
+							value = true
+							break
+						end
+					end
+				end
+				if value == false then
+					player.set_shortcut_available(type, false)
+					player.set_shortcut_toggled(type, false)
+				end
+			end
+		elseif toggle == 0 then --armor place
+			false_shortcuts(player)
+			for _, equipment in pairs(grid.equipment) do
+				local type = equipment.type
+				if equipment.valid and type == "night-vision-equipment" or type == "belt-immunity-equipment" or (type == "active-defense-equipment" and game.equipment_prototypes["disabledinactive-" .. equipment.name] == nil) then
+					enable_it(player, equipment, grid, equipment.type)
 				end
 			end
 		end
 	else
-		player.set_shortcut_available("night-vision-equipment", false)
-		player.set_shortcut_available("belt-immunity-equipment", false)
-		player.set_shortcut_toggled("night-vision-equipment", false)
-		player.set_shortcut_toggled("belt-immunity-equipment", false)
+		false_shortcuts(player)
 	end
 end
 
@@ -137,9 +193,9 @@ local function initialize()
 	end
 end
 
-script.on_event(defines.events.on_player_armor_inventory_changed, reset_state)
-script.on_event(defines.events.on_player_placed_equipment, reset_state)
-script.on_event(defines.events.on_player_removed_equipment, reset_state)
+script.on_event(defines.events.on_player_armor_inventory_changed, function(event) reset_state(event,0) end)
+script.on_event(defines.events.on_player_placed_equipment, function(event) reset_state(event,1) end)
+script.on_event(defines.events.on_player_removed_equipment, function(event) reset_state(event,2) end)
 
 script.on_event(defines.events.on_lua_shortcut, shortcut_type)
 
@@ -150,6 +206,7 @@ script.on_event(defines.events.on_player_created, function(event)
 	player.set_shortcut_toggled("flashlight-toggle", true)
 	player.set_shortcut_available("night-vision-equipment", false)
 	player.set_shortcut_available("belt-immunity-equipment", false)
+	player.set_shortcut_available("active-defense-equipment", false)
 end)
 
 script.on_init(initialize)

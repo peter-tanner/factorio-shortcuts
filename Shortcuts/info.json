@@ -1,10 +1,10 @@
 {
 	"name": "Shortcuts",
-	"version": "0.3.0",
+	"version": "0.4.0",
 	"factorio_version": "0.17",
 	"title": "Shortcuts",
 	"author": "npc_strider(morley376)",
 	"contact": "",
 	"homepage": "http://steamcommunity.com/id/morley376",
-	"description": "Adds in a shortcut button for the artillery remote, and toggles for night-vision-equipment, belt-immunity-equipment and the player lamp. Suggest any new shortcut ideas to the discussion page."
+	"description": "Adds in a shortcut button for the artillery remote discharge defense remote, and toggles for night-vision-equipment, belt-immunity-equipment, personal-laser-defense and the player lamp. Shortcuts also for YARM, orbital ion cannon and outpost planner. Suggest any new shortcut ideas to the discussion page."
 }
