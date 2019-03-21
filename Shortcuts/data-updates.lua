@@ -34,6 +34,10 @@ local equipment_list = {
 	"belt-immunity-equipment",
 	"active-defense-equipment",
 }
+if mods["Nanobots"] then
+	equipment_list = {}
+end
+
 for i=1,(#equipment_list) do
 	for _, equipment in pairs(data.raw[equipment_list[i]]) do
 		local i = #disabled_equipment+1
@@ -81,7 +85,8 @@ for i=1,(#disabled_equipment),1 do
 	end
 end
 
-local warning = {
+data:extend({
+	{
 		type = "virtual-signal", -- TODO: placeholder, when removing, remember to remove localised name too!
 		name = "signal-danger",
 		localised_name = {"gui-alert-tooltip.title"},
@@ -90,6 +95,55 @@ local warning = {
 		subgroup = "virtual-signal-color",
 		order = "d[colors]-[9danger]",
 		hidden = true,
+	},
+	{
+		type = "virtual-signal",
+		name = "signal-disabled",
+		localised_name = {"gui-alert-tooltip.title"},
+		icon = "__core__/graphics/destroyed-icon.png",
+		icon_size = 64,
+		subgroup = "virtual-signal-color",
+		order = "d[colors]-[9disabled]",
+		hidden = true,
+	}
+})
+
+local disabled_turret = {}
+local disabled_turret_item = {}
+local disabled_gun = {}
+local disable_turret_list = {
+	"artillery-wagon",
 }
 
-data:extend{(warning)}
+for i=1,(#disable_turret_list) do
+	for _, entity in pairs(data.raw[disable_turret_list[i]]) do
+		local i = #disabled_turret+1
+		disabled_turret[i] = util.table.deepcopy(entity)
+		local name = disabled_turret[i].name
+		local gun = disabled_turret[i].gun
+		disabled_turret_item[i] = util.table.deepcopy(data.raw["item-with-entity-data"][name])
+		if disabled_turret_item[i] == nil then
+			disabled_turret_item[i] =  util.table.deepcopy(data.raw["item-with-entity-data"]["artillery-wagon"])
+		end
+		disabled_turret_item[i].name = "disabled-" .. name
+		disabled_turret_item[i].place_result = "disabled-" .. name
+		disabled_turret[i].name = "disabled-" .. name
+		disabled_turret[i].localised_name = {"", {"entity-name." .. entity.name}, " (", {"gui-constant.off"}, ")"}
+		disabled_gun[i] = util.table.deepcopy(data.raw["gun"][gun])
+		disabled_gun[i].name = "disabled-" .. gun
+		disabled_gun[i].tint = { r = 1.0, g = 0.0, b = 0.0, a = 1.0 }
+		disabled_gun[i].attack_parameters.range = 0
+		disabled_gun[i].attack_parameters.min_range = 0
+		disabled_turret[i].gun = disabled_gun[i].name
+	end
+end
+
+for i=1,(#disabled_turret),1 do
+	data:extend({disabled_turret[i]})
+	if disabled_gun[i] then
+		data:extend({disabled_gun[i]})
+	end
+	if disabled_turret_item[i] then
+		data:extend({disabled_turret_item[i]})
+	end
+end

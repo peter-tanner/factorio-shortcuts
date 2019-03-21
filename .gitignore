@@ -1,0 +1,6 @@
+mod
+*.svg
+mod-list.json
+*.dat
+*.pdn
+*.zip

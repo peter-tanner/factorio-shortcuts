@@ -1,3 +1,5 @@
+require("util")
+
 local function update_armor(event)
 	local player = game.players[event.player_index]
 	local power_armor = player.get_inventory(defines.inventory.player_armor)
@@ -66,13 +68,19 @@ end
 
 local function shortcut_type(event)
 	local prototype_name = event.prototype_name
-	if prototype_name == "night-vision-equipment" then
-		update_state(event, "night-vision-equipment")
-	elseif prototype_name == "belt-immunity-equipment" then
-		update_state(event, "belt-immunity-equipment")
-	elseif prototype_name == "active-defense-equipment" then
-		update_state(event, "active-defense-equipment")
-	elseif prototype_name == "flashlight-toggle" then
+	if not game.active_mods["Nanobots"] then
+		if prototype_name == "night-vision-equipment" then
+			update_state(event, "night-vision-equipment")
+			return
+		elseif prototype_name == "belt-immunity-equipment" then
+			update_state(event, "belt-immunity-equipment")
+			return
+		elseif prototype_name == "active-defense-equipment" then
+			update_state(event, "active-defense-equipment")
+			return
+		end
+	end
+	if prototype_name == "flashlight-toggle" then
 		toggle_light(game.players[event.player_index])
 	elseif prototype_name == "big-zoom" then
 		local player = game.players[event.player_index]
@@ -105,6 +113,9 @@ local function update_inventory(event) -- removes spare remotes
 		end
 		if item_prototypes["ion-cannon-targeter"] then
 			inventory.remove("ion-cannon-targeter")
+		end
+		if item_prototypes["max-rate-calculator"] then
+			inventory.remove("max-rate-calculator")
 		end
 	end
 end
@@ -184,6 +195,54 @@ local function reset_state(event, toggle) -- verifies placement of equipment and
 	end
 end
 
+local function artillery_swap(wagon,new_name)
+	local shellname = {}
+	local shellcount = {}
+	local inventory = table.deepcopy(wagon.get_inventory(defines.inventory.artillery_wagon_ammo))
+	for i=1,(#inventory) do
+		if inventory[i].valid_for_read then
+			shellname[#shellname+1] = inventory[i].name
+			shellcount[#shellcount+1] = inventory[i].count
+		end
+	end
+	
+	local name = wagon.name
+	local surface = wagon.surface.name
+	local position = wagon.position
+	local direction = wagon.direction
+	local force = wagon.force
+	local kills = wagon.kills
+	local damage = wagon.damage_dealt
+	local health = wagon.health
+	wagon.destroy()
+	local new_wagon = game.surfaces[surface].create_entity{name=new_name, position=position, direction=direction, force=force, kills=kills, damage=damage, create_build_effect_smoke=false}
+	if new_wagon then
+		new_wagon.health = health
+		for i=1,(#shellcount) do
+			if new_wagon.can_insert({name=shellname[i],count=shellcount[i]}) == true then
+				new_wagon.insert({name=shellname[i],count=shellcount[i]})
+			end
+		end
+	end
+	return new_wagon
+end
+
+local function jam_artillery(event)
+	if event.item == "artillery-jammer-tool" and event.entities ~= nil then
+		for _, wagon in pairs(event.entities) do
+			local name = wagon.name
+			if wagon.valid and wagon.type == "artillery-wagon" and not (string.sub(name,1,9) == "disabled-") then
+				local new_name = ("disabled-" .. name)
+				local new_wagon = artillery_swap(wagon,new_name)
+				rendering.draw_sprite{sprite="virtual-signal.signal-disabled", x_scale=1.5, y_scale=1.5, target_offset={0.0,-0.5}, render_layer="entity-info-icon", target=new_wagon, surface=new_wagon.surface, forces={new_wagon.force}}
+			elseif wagon.valid and wagon.type == "artillery-wagon" and (string.sub(name,1,9) == "disabled-") then
+				local new_name = (string.sub(name,10,#name))
+				artillery_swap(wagon,new_name)
+			end
+		end
+	end
+end
+
 local function initialize()
 	if global.shortcuts_light == nil then
 		global.shortcuts_light = {}
@@ -193,9 +252,21 @@ local function initialize()
 	end
 end
 
-script.on_event(defines.events.on_player_armor_inventory_changed, function(event) reset_state(event,0) end)
-script.on_event(defines.events.on_player_placed_equipment, function(event) reset_state(event,1) end)
-script.on_event(defines.events.on_player_removed_equipment, function(event) reset_state(event,2) end)
+script.on_event(defines.events.on_player_armor_inventory_changed, function(event)
+	if not game.active_mods["Nanobots"] then
+		reset_state(event,0)
+	end
+end)
+script.on_event(defines.events.on_player_placed_equipment, function(event)
+	if not game.active_mods["Nanobots"] then
+		reset_state(event,1)
+	end
+end)
+script.on_event(defines.events.on_player_removed_equipment, function(event)
+	if not game.active_mods["Nanobots"] then
+		reset_state(event,2)
+	end
+end)
 
 script.on_event(defines.events.on_lua_shortcut, shortcut_type)
 
@@ -203,11 +274,18 @@ script.on_event(defines.events.on_player_main_inventory_changed, update_inventor
 
 script.on_event(defines.events.on_player_created, function(event)
 	local player = game.players[event.player_index]
-	player.set_shortcut_toggled("flashlight-toggle", true)
-	player.set_shortcut_available("night-vision-equipment", false)
-	player.set_shortcut_available("belt-immunity-equipment", false)
-	player.set_shortcut_available("active-defense-equipment", false)
+	if not game.active_mods["Nanobots"] then
+		player.set_shortcut_toggled("flashlight-toggle", true)
+		player.set_shortcut_available("night-vision-equipment", false)
+		player.set_shortcut_available("belt-immunity-equipment", false)
+		player.set_shortcut_available("active-defense-equipment", false)
+	else
+		player.print("WARNING: Shortcuts for modular equipment disabled as Nanobots is installed")
+		player.print("> Use the Nanobots hotkeys instead: \"Ctrl F1 - F7 Will toggle specific modular armor equipment on or off\"")
+	end
 end)
+
+script.on_event(defines.events.on_player_selected_area, jam_artillery)
 
 script.on_init(initialize)
 script.on_configuration_changed(initialize)

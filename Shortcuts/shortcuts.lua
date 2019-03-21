@@ -1,5 +1,33 @@
 data:extend(
 {
+	--	for the artillery toggle
+	{
+		type = "selection-tool",
+		name = "artillery-jammer-tool",
+		icon = "__base__/graphics/icons/deconstruction-planner.png",
+		icon_size = 32,
+		flags = {"hidden"},
+		subgroup = "other",
+		order = "c[automated-construction]-a[deconstruction-planner]",
+		stack_size = 1,
+		stackable = false,
+		selection_color = { r = 1, g = 0, b = 0 },
+		alt_selection_color = { r = 1, g = 0, b = 0 },
+		selection_mode = {"blueprint"},
+		alt_selection_mode = {"blueprint"},
+		selection_cursor_box_type = "copy",
+		alt_selection_cursor_box_type = "copy",
+		entity_type_filters = {"artillery-wagon"},
+		tile_filters = {},
+		entity_filter_mode = "whitelist",
+		tile_filter_mode = "whitelist",
+		alt_entity_type_filters = {"artillery-wagon"},
+		alt_tile_filters = {},
+		alt_entity_filter_mode = "whitelist",
+		alt_tile_filter_mode = "whitelist",
+		show_in_library = false
+	},
+	--	all shortcuts
 	{
 		type = "shortcut",
 		name = "artillery-targeting-remote",
@@ -28,39 +56,6 @@ data:extend(
 		disabled_small_icon =
 		{
 			filename = "__Shortcuts__/graphics/artillery-targeting-remote-x24-white.png",
-			priority = "extra-high-no-scale",
-			size = 24,
-			scale = 1,
-			flags = {"icon"}
-		},
-	},
-	{
-		type = "shortcut",
-		name = "night-vision-equipment",
-		order = "a[night-vision-equipment]",
-		action = "lua",
-		localised_name = {"equipment-name.night-vision-equipment"},
-		technology_to_unlock = "night-vision-equipment",
-		toggleable = true,
-		icon =
-		{
-			filename = "__Shortcuts__/graphics/night-vision-toggle-x32.png",
-			priority = "extra-high-no-scale",
-			size = 32,
-			scale = 1,
-			flags = {"icon"}
-		},
-		small_icon =
-		{
-			filename = "__Shortcuts__/graphics/night-vision-toggle-x24.png",
-			priority = "extra-high-no-scale",
-			size = 24,
-			scale = 1,
-			flags = {"icon"}
-		},
-		disabled_small_icon =
-		{
-			filename = "__Shortcuts__/graphics/night-vision-toggle-x24-white.png",
 			priority = "extra-high-no-scale",
 			size = 24,
 			scale = 1,
@@ -101,105 +96,6 @@ data:extend(
 			flags = {"icon"}
 		},
 	},
-	{
-		type = "shortcut",
-		name = "night-vision-equipment",
-		order = "a[night-vision-equipment]",
-		action = "lua",
-		localised_name = {"equipment-name.night-vision-equipment"},
-		technology_to_unlock = "night-vision-equipment",
-		toggleable = true,
-		icon =
-		{
-			filename = "__Shortcuts__/graphics/night-vision-toggle-x32.png",
-			priority = "extra-high-no-scale",
-			size = 32,
-			scale = 1,
-			flags = {"icon"}
-		},
-		small_icon =
-		{
-			filename = "__Shortcuts__/graphics/night-vision-toggle-x24.png",
-			priority = "extra-high-no-scale",
-			size = 24,
-			scale = 1,
-			flags = {"icon"}
-		},
-		disabled_small_icon =
-		{
-			filename = "__Shortcuts__/graphics/night-vision-toggle-x24-white.png",
-			priority = "extra-high-no-scale",
-			size = 24,
-			scale = 1,
-			flags = {"icon"}
-		},
-	},	
-	{
-		type = "shortcut",
-		name = "active-defense-equipment",
-		order = "a[active-defense-equipment]",
-		action = "lua",
-		localised_name = {"equipment-name.personal-laser-defense-equipment"},
-		technology_to_unlock = "personal-laser-defense-equipment",
-		toggleable = true,
-		icon =
-		{
-			filename = "__Shortcuts__/graphics/active-defense-equipment-x32.png",
-			priority = "extra-high-no-scale",
-			size = 32,
-			scale = 1,
-			flags = {"icon"}
-		},
-		small_icon =
-		{
-			filename = "__Shortcuts__/graphics/active-defense-equipment-x24.png",
-			priority = "extra-high-no-scale",
-			size = 24,
-			scale = 1,
-			flags = {"icon"}
-		},
-		disabled_small_icon =
-		{
-			filename = "__Shortcuts__/graphics/active-defense-equipment-x24-white.png",
-			priority = "extra-high-no-scale",
-			size = 24,
-			scale = 1,
-			flags = {"icon"}
-		},
-	},
-	{
-		type = "shortcut",
-		name = "belt-immunity-equipment",
-		order = "a[belt-immunity-equipment]",
-		action = "lua",
-		localised_name = {"item-name.belt-immunity-equipment"},
-		technology_to_unlock = "belt-immunity-equipment",
-		toggleable = true,
-		icon =
-		{
-			filename = "__Shortcuts__/graphics/belt-immunity-toggle-x32.png",
-			priority = "extra-high-no-scale",
-			size = 32,
-			scale = 1,
-			flags = {"icon"}
-		},
-		small_icon =
-		{
-			filename = "__Shortcuts__/graphics/belt-immunity-toggle-x24.png",
-			priority = "extra-high-no-scale",
-			size = 24,
-			scale = 1,
-			flags = {"icon"}
-		},
-		disabled_small_icon =
-		{
-			filename = "__Shortcuts__/graphics/belt-immunity-toggle-x24-white.png",
-			priority = "extra-high-no-scale",
-			size = 24,
-			scale = 1,
-			flags = {"icon"}
-		},
-	},	
 	{
 		type = "shortcut",
 		name = "flashlight-toggle",
@@ -422,6 +318,183 @@ data:extend(
 		disabled_small_icon =
 		{
 			filename = "__Shortcuts__/graphics/ion-cannon-targeter-x24-white.png",
+			priority = "extra-high-no-scale",
+			size = 24,
+			scale = 1,
+			flags = {"icon"}
+		},
+	}
+})
+end
+
+if mods["MaxRateCalculator"] and data.raw["selection-tool"]["max-rate-calculator"] then
+data:extend(
+{
+	{
+		type = "shortcut",
+		name = "max-rate-calculator",
+		order = "a[max-rate-calculator]",
+		action = "create-blueprint-item",
+		localised_name = {"item-name.max-rate-calculator"},
+		item_to_create = "max-rate-calculator",
+		style = "blue",
+		icon =
+		{
+			filename = "__Shortcuts__/graphics/ion-cannon-targeter-x32-white.png",
+			priority = "extra-high-no-scale",
+			size = 32,
+			scale = 1,
+			flags = {"icon"}
+		},
+		small_icon =
+		{
+			filename = "__Shortcuts__/graphics/ion-cannon-targeter-x24.png",
+			priority = "extra-high-no-scale",
+			size = 24,
+			scale = 1,
+			flags = {"icon"}
+		},
+		disabled_small_icon =
+		{
+			filename = "__Shortcuts__/graphics/ion-cannon-targeter-x24-white.png",
+			priority = "extra-high-no-scale",
+			size = 24,
+			scale = 1,
+			flags = {"icon"}
+		},
+	}
+})
+end
+
+if not mods["Nanobots"] then
+data:extend(
+{
+	{
+		type = "shortcut",
+		name = "night-vision-equipment",
+		order = "a[night-vision-equipment]",
+		action = "lua",
+		localised_name = {"equipment-name.night-vision-equipment"},
+		technology_to_unlock = "night-vision-equipment",
+		toggleable = true,
+		icon =
+		{
+			filename = "__Shortcuts__/graphics/night-vision-toggle-x32.png",
+			priority = "extra-high-no-scale",
+			size = 32,
+			scale = 1,
+			flags = {"icon"}
+		},
+		small_icon =
+		{
+			filename = "__Shortcuts__/graphics/night-vision-toggle-x24.png",
+			priority = "extra-high-no-scale",
+			size = 24,
+			scale = 1,
+			flags = {"icon"}
+		},
+		disabled_small_icon =
+		{
+			filename = "__Shortcuts__/graphics/night-vision-toggle-x24-white.png",
+			priority = "extra-high-no-scale",
+			size = 24,
+			scale = 1,
+			flags = {"icon"}
+		},
+	},
+	{
+		type = "shortcut",
+		name = "night-vision-equipment",
+		order = "a[night-vision-equipment]",
+		action = "lua",
+		localised_name = {"equipment-name.night-vision-equipment"},
+		technology_to_unlock = "night-vision-equipment",
+		toggleable = true,
+		icon =
+		{
+			filename = "__Shortcuts__/graphics/night-vision-toggle-x32.png",
+			priority = "extra-high-no-scale",
+			size = 32,
+			scale = 1,
+			flags = {"icon"}
+		},
+		small_icon =
+		{
+			filename = "__Shortcuts__/graphics/night-vision-toggle-x24.png",
+			priority = "extra-high-no-scale",
+			size = 24,
+			scale = 1,
+			flags = {"icon"}
+		},
+		disabled_small_icon =
+		{
+			filename = "__Shortcuts__/graphics/night-vision-toggle-x24-white.png",
+			priority = "extra-high-no-scale",
+			size = 24,
+			scale = 1,
+			flags = {"icon"}
+		},
+	},	
+	{
+		type = "shortcut",
+		name = "active-defense-equipment",
+		order = "a[active-defense-equipment]",
+		action = "lua",
+		localised_name = {"equipment-name.personal-laser-defense-equipment"},
+		technology_to_unlock = "personal-laser-defense-equipment",
+		toggleable = true,
+		icon =
+		{
+			filename = "__Shortcuts__/graphics/active-defense-equipment-x32.png",
+			priority = "extra-high-no-scale",
+			size = 32,
+			scale = 1,
+			flags = {"icon"}
+		},
+		small_icon =
+		{
+			filename = "__Shortcuts__/graphics/active-defense-equipment-x24.png",
+			priority = "extra-high-no-scale",
+			size = 24,
+			scale = 1,
+			flags = {"icon"}
+		},
+		disabled_small_icon =
+		{
+			filename = "__Shortcuts__/graphics/active-defense-equipment-x24-white.png",
+			priority = "extra-high-no-scale",
+			size = 24,
+			scale = 1,
+			flags = {"icon"}
+		},
+	},
+	{
+		type = "shortcut",
+		name = "belt-immunity-equipment",
+		order = "a[belt-immunity-equipment]",
+		action = "lua",
+		localised_name = {"item-name.belt-immunity-equipment"},
+		technology_to_unlock = "belt-immunity-equipment",
+		toggleable = true,
+		icon =
+		{
+			filename = "__Shortcuts__/graphics/belt-immunity-toggle-x32.png",
+			priority = "extra-high-no-scale",
+			size = 32,
+			scale = 1,
+			flags = {"icon"}
+		},
+		small_icon =
+		{
+			filename = "__Shortcuts__/graphics/belt-immunity-toggle-x24.png",
+			priority = "extra-high-no-scale",
+			size = 24,
+			scale = 1,
+			flags = {"icon"}
+		},
+		disabled_small_icon =
+		{
+			filename = "__Shortcuts__/graphics/belt-immunity-toggle-x24-white.png",
 			priority = "extra-high-no-scale",
 			size = 24,
 			scale = 1,
