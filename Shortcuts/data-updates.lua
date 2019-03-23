@@ -147,3 +147,8 @@ for i=1,(#disabled_turret),1 do
 		data:extend({disabled_turret_item[i]})
 	end
 end
+
+local decon_spec = util.table.deepcopy(data.raw["deconstruction-item"]["deconstruction-planner"])
+decon_spec.name = "shortcuts-deconstruction-planner"
+decon_spec.localised_name = {"item-name.deconstruction-planner"}
+data:extend({decon_spec})

@@ -66,45 +66,14 @@ local function toggle_light(player)
 	end
 end
 
-local function shortcut_type(event)
-	local prototype_name = event.prototype_name
-	if not game.active_mods["Nanobots"] then
-		if prototype_name == "night-vision-equipment" then
-			update_state(event, "night-vision-equipment")
-			return
-		elseif prototype_name == "belt-immunity-equipment" then
-			update_state(event, "belt-immunity-equipment")
-			return
-		elseif prototype_name == "active-defense-equipment" then
-			update_state(event, "active-defense-equipment")
-			return
-		end
-	end
-	if prototype_name == "flashlight-toggle" then
-		toggle_light(game.players[event.player_index])
-	elseif prototype_name == "big-zoom" then
-		local player = game.players[event.player_index]
-		if settings.global["disable-zoom"].value == true then
-			player.zoom = settings.get_player_settings(player)["zoom-level"].value
-		else
-			player.print({"", {"error.error-message-box-title"}, ": ", {"controls.alt-zoom-out"}, " ", {"gui-mod-info.status-disabled"}})
-		end
-	elseif prototype_name == "signal-flare" then
-		local player = game.players[event.player_index]
-		if settings.global["disable-zoom"].value == true then
-			player.force.print({"", "[img=virtual-signal.signal-danger] [color=1,0.1,0.1]", {"entity-name.player"}, " " ..  player.name .. " [gps=" .. math.floor(player.position.x+0.5) .. "," .. math.floor(player.position.y+0.5) ..  "][/color] [img=virtual-signal.signal-danger]"})
-		else
-			player.print({"", {"error.error-message-box-title"}, ": ", {"technology-name.military"}, " ", {"entity-name.beacon"}, " ", {"gui-mod-info.status-disabled"}})
-		end
-	end
-end
-
 local function update_inventory(event) -- removes spare remotes
 	local item_prototypes = game.item_prototypes
 	local inventory = game.players[event.player_index].get_inventory(defines.inventory.player_main)
 	if inventory and inventory.valid then
 		inventory.remove("artillery-targeting-remote")
+		inventory.remove("artillery-jammer-tool")
 		inventory.remove("discharge-defense-remote")
+		inventory.remove("shortcuts-deconstruction-planner")
 		if item_prototypes["resource-monitor"] then
 			inventory.remove("resource-monitor")
 		end
@@ -215,30 +184,117 @@ local function artillery_swap(wagon,new_name)
 	local damage = wagon.damage_dealt
 	local health = wagon.health
 	wagon.destroy()
-	local new_wagon = game.surfaces[surface].create_entity{name=new_name, position=position, direction=direction, force=force, kills=kills, damage=damage, create_build_effect_smoke=false}
+	local new_wagon = game.surfaces[surface].create_entity{name=new_name, position=position, direction=direction, force=force, create_build_effect_smoke=false}
 	if new_wagon then
+		new_wagon.kills = kills
+		new_wagon.damage_dealt = damage
 		new_wagon.health = health
 		for i=1,(#shellcount) do
 			if new_wagon.can_insert({name=shellname[i],count=shellcount[i]}) == true then
 				new_wagon.insert({name=shellname[i],count=shellcount[i]})
 			end
 		end
+	else
+		game.print("ERROR: Artillery wagon failed to convert (this is not supposed to occur)")
 	end
 	return new_wagon
 end
 
 local function jam_artillery(event)
 	if event.item == "artillery-jammer-tool" and event.entities ~= nil then
+		local player = game.players[event.player_index]
+		local i = 0
+		local j = 0
 		for _, wagon in pairs(event.entities) do
 			local name = wagon.name
 			if wagon.valid and wagon.type == "artillery-wagon" and not (string.sub(name,1,9) == "disabled-") then
+				i=i+1
 				local new_name = ("disabled-" .. name)
 				local new_wagon = artillery_swap(wagon,new_name)
 				rendering.draw_sprite{sprite="virtual-signal.signal-disabled", x_scale=1.5, y_scale=1.5, target_offset={0.0,-0.5}, render_layer="entity-info-icon", target=new_wagon, surface=new_wagon.surface, forces={new_wagon.force}}
 			elseif wagon.valid and wagon.type == "artillery-wagon" and (string.sub(name,1,9) == "disabled-") then
+				j=j+1
 				local new_name = (string.sub(name,10,#name))
 				artillery_swap(wagon,new_name)
 			end
+		end
+		if game.is_multiplayer() == true then
+			if i ~= 0 and j == 0 then
+				player.force.print("Player " .. player.name .. " on surface " .. player.surface.name .. " has disabled " .. i .. " artillery wagons")
+			elseif i == 0 and j ~= 0 then
+				player.force.print("Player " .. player.name .. " on surface " .. player.surface.name .. " has enabled " .. j .. " artillery wagons")
+			elseif i ~= 0 and j ~= 0 then
+				player.force.print("Player " .. player.name .. " on surface " .. player.surface.name .. " has enabled " .. j .. " and disabled " .. i .. " artillery wagons")
+			end
+		end
+	end
+end
+
+local function draw_grid(player_index)
+	local player = game.players[player_index]
+	if global.shortcuts_grid[player_index] == nil then
+		global.shortcuts_grid[player_index] = {}
+	end
+	-- game.print(#global.shortcuts_grid[player_index])
+	if #global.shortcuts_grid[player_index] == 0 then
+		player.set_shortcut_toggled("draw-grid", true)
+		-- Opts
+		local settings = settings.get_player_settings(player)
+		local radius = settings["grid-radius"].value
+		local step = settings["grid-step"].value
+		local thinn_width = settings["grid-line-width"].value
+		local thicc_width = settings["grid-chunk-line-width"].value
+		local chunk_align = settings["grid-chunk-align"].value
+		local ground_grid = settings["grid-ground"].value
+		
+		local center_x = math.floor(player.position.x)
+		local center_y = math.floor(player.position.y)
+		if chunk_align == true then
+			center_x = math.floor(player.position.x/32)*32
+			center_y = math.floor(player.position.y/32)*32
+		end
+		-- game.print(center_x .. ", " .. center_y)
+		for i=-radius,(radius),step do
+			if (center_x+i) % 32 == 0 then
+				width = thicc_width
+			else
+				width = thinn_width
+			end
+			local line = rendering.draw_line{
+				color = {r = 0, g = 0, b = 0, a = 1},
+				width = width,
+				from = {center_x+i,center_y+radius},
+				to = {center_x+i,center_y-radius},
+				surface = player.surface,
+				players = {player},
+				draw_on_ground = ground_grid
+			}
+			global.shortcuts_grid[player_index][#global.shortcuts_grid[player_index]+1] = line
+			
+			if (center_y+i) % 32 == 0 then
+				width = thicc_width
+			else
+				width = thinn_width
+			end
+			local line = rendering.draw_line{
+				color = {r = 0, g = 0, b = 0, a = 1},
+				width = width,
+				from = {center_x+radius,center_y+i},
+				to = {center_x-radius,center_y+i},
+				-- from = {center_x+radius,center_y+i}, -- 	this looks pretty cool (although not a grid)
+				-- to = {center_x-i,center_y+radius},
+				surface = player.surface,
+				players = {player},
+				draw_on_ground = ground_grid
+			}
+			global.shortcuts_grid[player_index][#global.shortcuts_grid[player_index]+1] = line
+		end
+	else
+		player.set_shortcut_toggled("draw-grid", false)
+		local grid = global.shortcuts_grid[player_index]
+		for i=1,(#grid) do
+			rendering.destroy(grid[i])
+			grid[i] = nil
 		end
 	end
 end
@@ -249,6 +305,9 @@ local function initialize()
 	end
 	if global.shortcuts_armor == nil then
 		global.shortcuts_armor = {}
+	end
+	if global.shortcuts_grid == nil then
+		global.shortcuts_grid = {}
 	end
 end
 
@@ -267,6 +326,49 @@ script.on_event(defines.events.on_player_removed_equipment, function(event)
 		reset_state(event,2)
 	end
 end)
+
+local function shortcut_type(event)
+	local prototype_name = event.prototype_name
+	if not game.active_mods["Nanobots"] then
+		if prototype_name == "night-vision-equipment" then
+			update_state(event, "night-vision-equipment")
+			return
+		elseif prototype_name == "belt-immunity-equipment" then
+			update_state(event, "belt-immunity-equipment")
+			return
+		elseif prototype_name == "active-defense-equipment" then
+			update_state(event, "active-defense-equipment")
+			return
+		end
+	end
+	if prototype_name == "big-zoom" then
+		local player = game.players[event.player_index]
+		if settings.global["disable-zoom"].value == true then
+			player.zoom = settings.get_player_settings(player)["zoom-level"].value
+		else
+			player.print({"", {"error.error-message-box-title"}, ": ", {"controls.alt-zoom-out"}, " ", {"gui-mod-info.status-disabled"}})
+		end
+	elseif prototype_name == "draw-grid" then
+		draw_grid(event.player_index)
+	elseif prototype_name == "tree-killer" then
+		local player = game.players[event.player_index]
+		if player.cursor_stack.valid_for_read == false then
+			if player.cursor_stack.can_set_stack({name="shortcuts-deconstruction-planner"}) then
+				player.cursor_stack.set_stack({name="shortcuts-deconstruction-planner"})
+				player.cursor_stack.trees_and_rocks_only = true
+			end
+		end
+	elseif prototype_name == "flashlight-toggle" then
+		toggle_light(game.players[event.player_index])
+	elseif prototype_name == "signal-flare" then
+		local player = game.players[event.player_index]
+		if settings.global["disable-zoom"].value == true then
+			player.force.print({"", "[img=virtual-signal.signal-danger] [color=1,0.1,0.1]", {"entity-name.player"}, " " ..  player.name .. " [gps=" .. math.floor(player.position.x+0.5) .. "," .. math.floor(player.position.y+0.5) ..  "][/color] [img=virtual-signal.signal-danger]"})
+		else
+			player.print({"", {"error.error-message-box-title"}, ": ", {"technology-name.military"}, " ", {"entity-name.beacon"}, " ", {"gui-mod-info.status-disabled"}})
+		end
+	end
+end
 
 script.on_event(defines.events.on_lua_shortcut, shortcut_type)
 
@@ -289,3 +391,4 @@ script.on_event(defines.events.on_player_selected_area, jam_artillery)
 
 script.on_init(initialize)
 script.on_configuration_changed(initialize)
+commands.add_command("shortcuts_initialize_variables", "debug: ensure that all global tables are not nil (should not happen in a normal game)", initialize)

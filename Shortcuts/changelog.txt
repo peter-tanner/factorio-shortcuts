@@ -1,11 +1,13 @@
 ---------------------------------------------------------------------------------------------------
 Version: 0.5.0
-Date: 22. 03. 2019
+Date: 23. 03. 2019
   Features:
     - Add selection tool to disable rail artillery
+	- Add a shortcut for the tree/rock deconstruction planner
+	- Customizable tile grid overlay, with adjustable widths & more
     - Add mod support for max rate calculator
   Bugfixes:
-    - Fixed conflict with Nanobots mod
+    - Fixed conflict with Nanobots mod. When both are installed the Nanobots mod takes priority over this mod.
 ---------------------------------------------------------------------------------------------------
 Version: 0.4.0
 Date: 10. 03. 2019
