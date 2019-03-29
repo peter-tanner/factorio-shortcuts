@@ -1,47 +1,61 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.6.0
+Date: 2019-03-29
+  Features:
+    - Toggle artillery works with artillery turrets now
+    - Added shortcut for rail block visualization
+    - Add mod support for module inserter
+
+---------------------------------------------------------------------------------------------------
 Version: 0.5.0
-Date: 23. 03. 2019
+Date: 2019-03-23
   Features:
     - Add selection tool to disable rail artillery
-	- Add a shortcut for the tree/rock deconstruction planner
-	- Customizable tile grid overlay, with adjustable widths & more
+    - Add a shortcut for the tree/rock deconstruction planner
+    - Customizable tile grid overlay, with adjustable widths & more
     - Add mod support for max rate calculator
   Bugfixes:
     - Fixed conflict with Nanobots mod. When both are installed the Nanobots mod takes priority over this mod.
+
 ---------------------------------------------------------------------------------------------------
 Version: 0.4.0
-Date: 10. 03. 2019
+Date: 2019-03-16
   Features:
     - Add toggle shortcut for personal-laser-defense
-	- Add a shortcut for the discharge-defense-remote
-	- Add mod support for oupost planner, YARM and orbital ion cannon
+    - Add a shortcut for the discharge-defense-remote
+    - Add mod support for oupost planner, YARM and orbital ion cannon
   Bugfixes:
     - Toggle buttons visually work properly
     - Using the lamp toggle on a god controller no longer crashes the game
+
 ---------------------------------------------------------------------------------------------------
 Version: 0.3.0
-Date: 10. 03. 2019
+Date: 2019-03-10
   Features:
     - Added distress beacon and ultra zoom button
   Bugfixes:
     - Fix another equipment grid issue found in playtesting
+
 ---------------------------------------------------------------------------------------------------
 Version: 0.2.2
-Date: 10. 03. 2019
+Date: 2019-03-10
   Bugfixes:
     - Fixed issue with gridless armor
+
 ---------------------------------------------------------------------------------------------------
 Version: 0.2.1
-Date: 09. 03. 2019
+Date: 2019-03-09
   Bugfixes:
     - Fixed issue with the disabled item equipment generation
+
 ---------------------------------------------------------------------------------------------------
 Version: 0.2.0
-Date: 09. 03. 2019
+Date: 2019-03-09
   Features:
     - Added toggle shortcuts for night-vision-equipment, belt-immunity-equipment and the flashlight
+
 ---------------------------------------------------------------------------------------------------
 Version: 0.1.0
-Date: 08. 03. 2019
+Date: 2019-03-08
   Features:
     - Added shortcut for the artillery-targeting-remote

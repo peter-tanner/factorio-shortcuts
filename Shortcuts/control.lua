@@ -65,6 +65,20 @@ local function toggle_light(player)
 		player.print({"", {"error.error-message-box-title"}, ": ", {"player-doesnt-exist", {"gui.character"}}, " (", {"controller.god"}, "): ", {"entity-name.small-lamp"}, " ", {"gui-mod-info.status-disabled"}})
 	end
 end
+local function toggle_rail(player)
+	if global.toggle_rail[player.index] == nil then
+		global.toggle_rail[player.index] = false
+	end
+	if global.toggle_rail[player.index] == true then
+		player.game_view_settings.show_rail_block_visualisation = false
+		global.toggle_rail[player.index] = false
+		player.set_shortcut_toggled("rail-block-visualization-toggle", false)
+	elseif global.toggle_rail[player.index] == false then
+		player.game_view_settings.show_rail_block_visualisation = true
+		global.toggle_rail[player.index] = true
+		player.set_shortcut_toggled("rail-block-visualization-toggle", true)
+	end
+end
 
 local function update_inventory(event) -- removes spare remotes
 	local item_prototypes = game.item_prototypes
@@ -85,6 +99,9 @@ local function update_inventory(event) -- removes spare remotes
 		end
 		if item_prototypes["max-rate-calculator"] then
 			inventory.remove("max-rate-calculator")
+		end
+		if item_prototypes["module-inserter"] then
+			inventory.remove("module-inserter")
 		end
 	end
 end
@@ -167,7 +184,13 @@ end
 local function artillery_swap(wagon,new_name)
 	local shellname = {}
 	local shellcount = {}
-	local inventory = table.deepcopy(wagon.get_inventory(defines.inventory.artillery_wagon_ammo))
+	local inventory
+	if wagon.type == "artillery-wagon" then
+		inventory = table.deepcopy(wagon.get_inventory(defines.inventory.artillery_wagon_ammo))
+	elseif wagon.type == "artillery-turret" then
+		inventory = table.deepcopy(wagon.get_inventory(defines.inventory.artillery_turret_ammo))
+	end
+	
 	for i=1,(#inventory) do
 		if inventory[i].valid_for_read then
 			shellname[#shellname+1] = inventory[i].name
@@ -207,12 +230,13 @@ local function jam_artillery(event)
 		local j = 0
 		for _, wagon in pairs(event.entities) do
 			local name = wagon.name
-			if wagon.valid and wagon.type == "artillery-wagon" and not (string.sub(name,1,9) == "disabled-") then
+			local type = wagon.type
+			if wagon.valid and (type == "artillery-wagon" or type == "artillery-turret") and not (string.sub(name,1,9) == "disabled-") then
 				i=i+1
 				local new_name = ("disabled-" .. name)
 				local new_wagon = artillery_swap(wagon,new_name)
-				rendering.draw_sprite{sprite="virtual-signal.signal-disabled", x_scale=1.5, y_scale=1.5, target_offset={0.0,-0.5}, render_layer="entity-info-icon", target=new_wagon, surface=new_wagon.surface, forces={new_wagon.force}}
-			elseif wagon.valid and wagon.type == "artillery-wagon" and (string.sub(name,1,9) == "disabled-") then
+				rendering.draw_sprite{sprite="virtual-signal.signal-disabled", x_scale=1.5, y_scale=1.5, target_offset={0.0,-0.5}, render_layer="entity-info-icon-above", target=new_wagon, surface=new_wagon.surface, forces={new_wagon.force}}
+			elseif wagon.valid and (type == "artillery-wagon" or type == "artillery-turret") and (string.sub(name,1,9) == "disabled-") then
 				j=j+1
 				local new_name = (string.sub(name,10,#name))
 				artillery_swap(wagon,new_name)
@@ -220,11 +244,11 @@ local function jam_artillery(event)
 		end
 		if game.is_multiplayer() == true then
 			if i ~= 0 and j == 0 then
-				player.force.print("Player " .. player.name .. " on surface " .. player.surface.name .. " has disabled " .. i .. " artillery wagons")
+				player.force.print("Player " .. player.name .. " on surface " .. player.surface.name .. " has disabled " .. i .. " artillery")
 			elseif i == 0 and j ~= 0 then
-				player.force.print("Player " .. player.name .. " on surface " .. player.surface.name .. " has enabled " .. j .. " artillery wagons")
+				player.force.print("Player " .. player.name .. " on surface " .. player.surface.name .. " has enabled " .. j .. " artillery")
 			elseif i ~= 0 and j ~= 0 then
-				player.force.print("Player " .. player.name .. " on surface " .. player.surface.name .. " has enabled " .. j .. " and disabled " .. i .. " artillery wagons")
+				player.force.print("Player " .. player.name .. " on surface " .. player.surface.name .. " has enabled " .. j .. " and disabled " .. i .. " artillery")
 			end
 		end
 	end
@@ -303,6 +327,9 @@ local function initialize()
 	if global.shortcuts_light == nil then
 		global.shortcuts_light = {}
 	end
+	if global.toggle_rail == nil then
+		global.toggle_rail = {}
+	end
 	if global.shortcuts_armor == nil then
 		global.shortcuts_armor = {}
 	end
@@ -360,6 +387,8 @@ local function shortcut_type(event)
 		end
 	elseif prototype_name == "flashlight-toggle" then
 		toggle_light(game.players[event.player_index])
+		elseif prototype_name == "rail-block-visualization-toggle" then
+		toggle_rail(game.players[event.player_index])
 	elseif prototype_name == "signal-flare" then
 		local player = game.players[event.player_index]
 		if settings.global["disable-zoom"].value == true then
@@ -376,8 +405,9 @@ script.on_event(defines.events.on_player_main_inventory_changed, update_inventor
 
 script.on_event(defines.events.on_player_created, function(event)
 	local player = game.players[event.player_index]
+	player.set_shortcut_toggled("flashlight-toggle", true)
+	player.set_shortcut_toggled("rail-block-visualization-toggle", false)
 	if not game.active_mods["Nanobots"] then
-		player.set_shortcut_toggled("flashlight-toggle", true)
 		player.set_shortcut_available("night-vision-equipment", false)
 		player.set_shortcut_available("belt-immunity-equipment", false)
 		player.set_shortcut_available("active-defense-equipment", false)

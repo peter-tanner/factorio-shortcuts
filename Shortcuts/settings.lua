@@ -70,5 +70,15 @@ data:extend({
 		localised_name = {"", {"gui-control-behavior-modes.enable-disable"}, " ", {"technology-name.military"}, " ", {"entity-name.beacon"}},
         setting_type = "runtime-global",
         default_value = true,
+    },
+	
+	--startup
+	{
+        type = "string-setting",
+        name = "artillery-toggle",
+		localised_name = {"", {"item-name.artillery-wagon-cannon"}, " ", {"gui-mod-info.toggle"}, " ", {"description.decorative-type"}},
+        setting_type = "startup",
+		allowed_values = {"both", "artillery-wagon", "artillery-turret"},
+        default_value = "both"
     }
 })

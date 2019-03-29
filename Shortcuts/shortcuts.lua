@@ -1,3 +1,13 @@
+
+local disable_turret_list = {}
+if settings.startup["artillery-toggle"].value == "both" then
+	disable_turret_list = {"artillery-wagon", "artillery-turret",}
+elseif settings.startup["artillery-toggle"].value == "artillery-wagon" then
+	disable_turret_list = {"artillery-wagon"}
+elseif settings.startup["artillery-toggle"].value == "artillery-turret" then
+	disable_turret_list = {"artillery-turret"}
+end
+
 data:extend(
 {
 	--	for the artillery toggle
@@ -17,11 +27,11 @@ data:extend(
 		alt_selection_mode = {"blueprint"},
 		selection_cursor_box_type = "copy",
 		alt_selection_cursor_box_type = "copy",
-		entity_type_filters = {"artillery-wagon"},
+		entity_type_filters = disable_turret_list,
 		tile_filters = {"lab-dark-1"},
 		entity_filter_mode = "whitelist",
 		tile_filter_mode = "whitelist",
-		alt_entity_type_filters = {"artillery-wagon"},
+		alt_entity_type_filters = disable_turret_list,
 		alt_tile_filters = {"lab-dark-1"},
 		alt_entity_filter_mode = "whitelist",
 		alt_tile_filter_mode = "whitelist",
@@ -90,6 +100,40 @@ data:extend(
 		disabled_small_icon =
 		{
 			filename = "__Shortcuts__/graphics/grid-x24-white.png",
+			priority = "extra-high-no-scale",
+			size = 24,
+			scale = 1,
+			flags = {"icon"}
+		},
+	},
+	{
+		type = "shortcut",
+		name = "rail-block-visualization-toggle",
+		order = "a[rail-block-visualization-toggle]",
+		action = "lua",
+		localised_name = {"gui-interface-settings.show-rail-block-visualization"},
+		style = "default",
+		technology_to_unlock = "railway",
+		toggleable = true,
+		icon =
+		{
+			filename = "__Shortcuts__/graphics/rail-block-visualization-toggle-x32.png",
+			priority = "extra-high-no-scale",
+			size = 32,
+			scale = 1,
+			flags = {"icon"}
+		},
+		small_icon =
+		{
+			filename = "__Shortcuts__/graphics/rail-block-visualization-toggle-x24.png",
+			priority = "extra-high-no-scale",
+			size = 24,
+			scale = 1,
+			flags = {"icon"}
+		},
+		disabled_small_icon =
+		{
+			filename = "__Shortcuts__/graphics/rail-block-visualization-toggle-x24-white.png",
 			priority = "extra-high-no-scale",
 			size = 24,
 			scale = 1,
@@ -308,6 +352,7 @@ data:extend(
 	-- }
 })
 
+--	legacy for older version of YARM (newer versions have the shortcut built in)
 if mods["YARM"] and data.raw["item"]["resource-monitor"] and data.raw["technology"]["resource-monitoring"] then
 data:extend(
 {
@@ -463,6 +508,46 @@ data:extend(
 			scale = 1,
 			flags = {"icon"}
 		},
+	}
+})
+end
+
+if mods["ModuleInserter"] and data.raw["selection-tool"]["module-inserter"] then
+data:extend(
+{
+	{
+		type = "shortcut",
+		name = "module-inserter",
+		order = "a[module-inserter]",
+		action = "create-blueprint-item",
+		localised_name = {"item-name.module-inserter"},
+		item_to_create = "module-inserter",
+		technology_to_unlock = "modules",
+		style = "blue",
+		icon =
+		{
+			filename = "__Shortcuts__/graphics/module-inserter-x32-white.png",
+			priority = "extra-high-no-scale",
+			size = 32,
+			scale = 1,
+			flags = {"icon"}
+		},
+		small_icon =
+		{
+			filename = "__Shortcuts__/graphics/module-inserter-x24.png",
+			priority = "extra-high-no-scale",
+			size = 24,
+			scale = 1,
+			flags = {"icon"}
+		},
+		disabled_small_icon =
+		{
+			filename = "__Shortcuts__/graphics/module-inserter-x24-white.png",
+			priority = "extra-high-no-scale",
+			size = 24,
+			scale = 1,
+			flags = {"icon"}
+		},	
 	}
 })
 end

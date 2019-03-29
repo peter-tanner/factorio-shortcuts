@@ -111,9 +111,15 @@ data:extend({
 local disabled_turret = {}
 local disabled_turret_item = {}
 local disabled_gun = {}
-local disable_turret_list = {
-	"artillery-wagon",
-}
+local disable_turret_list = {}
+
+if settings.startup["artillery-toggle"].value == "both" then
+	disable_turret_list = {"artillery-wagon", "artillery-turret",}
+elseif settings.startup["artillery-toggle"].value == "artillery-wagon" then
+	disable_turret_list = {"artillery-wagon"}
+elseif settings.startup["artillery-toggle"].value == "artillery-turret" then
+	disable_turret_list = {"artillery-turret"}
+end
 
 for i=1,(#disable_turret_list) do
 	for _, entity in pairs(data.raw[disable_turret_list[i]]) do
@@ -122,6 +128,9 @@ for i=1,(#disable_turret_list) do
 		local name = disabled_turret[i].name
 		local gun = disabled_turret[i].gun
 		disabled_turret_item[i] = util.table.deepcopy(data.raw["item-with-entity-data"][name])
+		if disabled_turret_item[i] == nil then
+			disabled_turret_item[i] = util.table.deepcopy(data.raw["item"][name])
+		end
 		if disabled_turret_item[i] == nil then
 			disabled_turret_item[i] =  util.table.deepcopy(data.raw["item-with-entity-data"]["artillery-wagon"])
 		end
