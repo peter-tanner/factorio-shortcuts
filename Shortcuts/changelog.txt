@@ -1,4 +1,12 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.7.1
+Date: 2019-04-14
+  Features:
+    - Add setting to change the color (style property) for all dynamically generated shortcuts
+  Bugfixes:
+    - Dynamically generated shortcuts now no longer crash on startup if the selection-tool is composed of icons instead of an icon. (Will not make an attempt to composite the icons together - the shortcut will appear visually different from the tool in this case)
+
+---------------------------------------------------------------------------------------------------
 Version: 0.7.0
 Date: 2019-04-14
   Features:

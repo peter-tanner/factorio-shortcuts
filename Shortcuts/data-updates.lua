@@ -240,6 +240,13 @@ if settings.startup["autogen"].value == true then
 				end
 			end
 			if create == true then
+				local icon
+				local icon_size = tool.icon_size
+				if tool.icon then
+					icon = tool.icon
+				else
+					icon = tool.icons[1].icon
+				end
 				local shortcut = {
 					type = "shortcut",
 					name = name,
@@ -247,28 +254,28 @@ if settings.startup["autogen"].value == true then
 					action = "create-blueprint-item",
 					localised_name = {"item-name." .. name},
 					item_to_create = name,
-					style = "default",
+					style = settings.startup["autogen-color"].value,
 					icon =
 					{
-						filename = tool.icon,
+						filename = icon,
 						priority = "extra-high-no-scale",
-						size = tool.icon_size,
+						size = icon_size,
 						scale = 1,
 						flags = {"icon"}
 					},
 					small_icon =
 					{
-						filename = tool.icon,
+						filename = icon,
 						priority = "extra-high-no-scale",
-						size = tool.icon_size,
+						size = icon_size,
 						scale = 1,
 						flags = {"icon"}
 					},
 					disabled_small_icon =
 					{
-						filename = tool.icon,
+						filename = icon,
 						priority = "extra-high-no-scale",
-						size = tool.icon_size,
+						size = icon_size,
 						scale = 1,
 						flags = {"icon"}
 					},

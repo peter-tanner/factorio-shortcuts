@@ -91,6 +91,15 @@ data:extend({
 		order = "a"
     },
 	{
+        type = "string-setting",
+        name = "autogen-color",
+		localised_name = {"", "Auto-", {"gui-new-game.create"}, " ", {"gui-update.mod"}, " shortcuts ", {"gui-train.color"}},
+        setting_type = "startup",
+		allowed_values = {"default", "red", "green", "blue"},
+        default_value = "default",
+		order = "a"
+    },
+	{
         type = "bool-setting",
         name = "autogen",
 		localised_name = {"", "Auto-", {"gui-new-game.create"}, " ", {"gui-update.mod"}, " shortcuts"},

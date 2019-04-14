@@ -4,3 +4,6 @@ mod-list.json
 *.dat
 *.pdn
 *.zip
+path-remote-control.png
+unit-remote-control.png
+/old_assets
