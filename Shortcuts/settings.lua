@@ -79,6 +79,194 @@ data:extend({
 		localised_name = {"", {"item-name.artillery-wagon-cannon"}, " ", {"gui-mod-info.toggle"}, " ", {"description.decorative-type"}},
         setting_type = "startup",
 		allowed_values = {"both", "artillery-wagon", "artillery-turret"},
-        default_value = "both"
-    }
+        default_value = "both",
+		order = "a"
+    },
+	{
+        type = "bool-setting",
+        name = "autogen",
+		localised_name = {"", "Auto-", {"gui-new-game.create"}, " ", {"gui-update.mod"}, " shortcuts"},
+		localised_description = {"", {""}, "Automatically generate shortcuts for mods which are not officially supported by this mod through a script."},
+		setting_type = "startup",
+		default_value = true,
+		order = "a"
+    },
+	
+	
+	{	--	for each shortcut (to free up space for other modded shortcuts)
+		type = "bool-setting",
+		name = "artillery-targeting-remote",
+		localised_name = {"", {"item-name.artillery-targeting-remote"}, " ", {"gui-mod-info.toggle"}},
+		localised_description = {"", {""}, "Disable specific shortcuts to free up space for other modded shortcuts, or to slightly increase performance and load time."},
+		setting_type = "startup",
+		default_value = true,
+		order = "za"
+	},
+	{
+		type = "bool-setting",
+		name = "draw-grid",
+		localised_name = {"", {"gui.grid"}, " ", {"gui-mod-info.toggle"}},
+		localised_description = {"", {""}, "Disable specific shortcuts to free up space for other modded shortcuts, or to slightly increase performance and load time."},
+		setting_type = "startup",
+		default_value = true,
+		order = "za"
+	},
+	{
+		type = "bool-setting",
+		name = "rail-block-visualization-toggle",
+		localised_name = {"", {"gui-interface-settings.show-rail-block-visualization"}, " ", {"gui-mod-info.toggle"}},
+		localised_description = {"", {""}, "Disable specific shortcuts to free up space for other modded shortcuts, or to slightly increase performance and load time."},
+		setting_type = "startup",
+		default_value = true,
+		order = "za"
+	},
+	{
+		type = "bool-setting",
+		name = "artillery-jammer-remote",
+		localised_name = {"", {"gui-mod-info.toggle"}, " ", {"entity-name.artillery-wagon"}, " ", {"damage-type-name.fire"}, " ", {"gui-mod-info.toggle"}},
+		localised_description = {"", {""}, "Disable specific shortcuts to free up space for other modded shortcuts, or to slightly increase performance and load time."},
+		setting_type = "startup",
+		default_value = true,
+		order = "za"
+	},
+	{
+		type = "bool-setting",
+		name = "tree-killer",
+		localised_name = {"", {"item-name.deconstruction-planner"}, " (", {"gui-deconstruction.whitelist-trees-and-rocks"}, ") ", {"gui-mod-info.toggle"}},
+		localised_description = {"", {""}, "Disable specific shortcuts to free up space for other modded shortcuts, or to slightly increase performance and load time."},
+		setting_type = "startup",
+		default_value = true,
+		order = "za"
+	},
+	{
+		type = "bool-setting",
+		name = "discharge-defense-remote",
+		localised_name = {"", {"item-name.discharge-defense-remote"}, " ", {"gui-mod-info.toggle"}},
+		localised_description = {"", {""}, "Disable specific shortcuts to free up space for other modded shortcuts, or to slightly increase performance and load time."},
+		setting_type = "startup",
+		default_value = true,
+		order = "za"
+	},
+	{
+		type = "bool-setting",
+		name = "flashlight-toggle",
+		localised_name = {"", {"entity-name.small-lamp"}, " ", {"gui-mod-info.toggle"}},
+		localised_description = {"", {""}, "Disable specific shortcuts to free up space for other modded shortcuts, or to slightly increase performance and load time."},
+		setting_type = "startup",
+		default_value = true,
+		order = "za"
+	},
+	{
+		type = "bool-setting",
+		name = "big-zoom",
+		localised_name = {"", {"controls.alt-zoom-out"}, " ", {"gui-mod-info.toggle"}},
+		localised_description = {"", {""}, "Disable specific shortcuts to free up space for other modded shortcuts, or to slightly increase performance and load time."},
+		setting_type = "startup",
+		default_value = true,
+		order = "za"
+	},
+	{
+		type = "bool-setting",
+		name = "signal-flare",
+		localised_name = {"", {"technology-name.military"}, " ", {"entity-name.beacon"}, " (", {"description.force"}, " ", {"deconstruction-tile-mode.only"}, ") ", {"gui-mod-info.toggle"}},
+		localised_description = {"", {""}, "Disable specific shortcuts to free up space for other modded shortcuts, or to slightly increase performance and load time."},
+		setting_type = "startup",
+		default_value = true,
+		order = "za"
+	}
+})
+
+	--	Since we cannot conditionally extend mod settings, we have to implement them whether the mod is enabled or not :(
+data:extend(
+{
+	{
+		type = "bool-setting",
+		name = "resource-monitor",
+		localised_name = {"", {"item-name.resource-monitor"}, " ", {"gui-mod-info.toggle"}, " (LEGACY YARM)"},
+		localised_description = {"", {""}, "Disable specific shortcuts to free up space for other modded shortcuts, or to slightly increase performance and load time."},
+		setting_type = "startup",
+		default_value = true,
+		order = "zz"
+	},
+	{
+		type = "bool-setting",
+		name = "path-remote-control",
+		localised_name = {"", {"item-name.path-remote-control"}, " ", {"gui-mod-info.toggle"}},
+		localised_description = {"", {""}, "Disable specific shortcuts to free up space for other modded shortcuts, or to slightly increase performance and load time."},
+		setting_type = "startup",
+		default_value = true,
+		order = "zz"
+	},
+	{
+		type = "bool-setting",
+		name = "unit-remote-control",
+		localised_name = {"", {"item-name.unit-remote-control"}, " ", {"gui-mod-info.toggle"}},
+		localised_description = {"", {""}, "Disable specific shortcuts to free up space for other modded shortcuts, or to slightly increase performance and load time."},
+		setting_type = "startup",
+		default_value = true,
+		order = "zz"
+	},
+	{
+		type = "bool-setting",
+		name = "outpost-builder",
+		localised_name = {"", {"item-name.outpost-builder"}, " ", {"gui-mod-info.toggle"}},
+		localised_description = {"", {""}, "Disable specific shortcuts to free up space for other modded shortcuts, or to slightly increase performance and load time."},
+		setting_type = "startup",
+		default_value = true,
+		order = "zz"
+	},
+	{
+		type = "bool-setting",
+		name = "ion-cannon-targeter",
+		localised_name = {"", {"item-name.ion-cannon-targeter"}, " ", {"gui-mod-info.toggle"}},
+		localised_description = {"", {""}, "Disable specific shortcuts to free up space for other modded shortcuts, or to slightly increase performance and load time."},
+		setting_type = "startup",
+		default_value = true,
+		order = "zz"
+	},
+	{
+		type = "bool-setting",
+		name = "max-rate-calculator",
+		localised_name = {"", {"item-name.max-rate-calculator"}, " ", {"gui-mod-info.toggle"}},
+		localised_description = {"", {""}, "Disable specific shortcuts to free up space for other modded shortcuts, or to slightly increase performance and load time."},
+		setting_type = "startup",
+		default_value = true,
+		order = "zz"
+	},
+	{
+		type = "bool-setting",
+		name = "module-inserter",
+		localised_name = {"", {"item-name.module-inserter"}, " ", {"gui-mod-info.toggle"}},
+		localised_description = {"", {""}, "Disable specific shortcuts to free up space for other modded shortcuts, or to slightly increase performance and load time."},
+		setting_type = "startup",
+		default_value = true,
+		order = "zz"
+	},
+	{
+		type = "bool-setting",
+		name = "night-vision-equipment",
+		localised_name = {"", {"equipment-name.night-vision-equipment"}, " ", {"gui-mod-info.toggle"}},
+		localised_description = {"", {""}, "Disable specific shortcuts to free up space for other modded shortcuts, or to slightly increase performance and load time."},
+		setting_type = "startup",
+		default_value = true,
+		order = "zz"
+	},
+	{
+		type = "bool-setting",
+		name = "active-defense-equipment",
+		localised_name = {"", {"equipment-name.personal-laser-defense-equipment"}, " ", {"gui-mod-info.toggle"}},
+		localised_description = {"", {""}, "Disable specific shortcuts to free up space for other modded shortcuts, or to slightly increase performance and load time."},
+		setting_type = "startup",
+		default_value = true,
+		order = "zz"
+	},
+	{
+		type = "bool-setting",
+		name = "belt-immunity-equipment",
+		localised_name = {"", {"equipment-name.belt-immunity-equipment"}, " ", {"gui-mod-info.toggle"}},
+		localised_description = {"", {""}, "Disable specific shortcuts to free up space for other modded shortcuts, or to slightly increase performance and load time."},
+		setting_type = "startup",
+		default_value = true,
+		order = "zz"
+	}
 })

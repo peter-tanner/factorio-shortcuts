@@ -1,4 +1,17 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.7.0
+Date: 2019-04-14
+  Features:
+    - Add mod support for AAI vehicles
+    - Ability to selectively disable/enable individaul settings from mod settings startup panel
+    - Dynamically generate shortcuts for any selection-tool
+    - Make use of "only-in-cursor" flag and remove relevant scripts (Should offer an insignificant performance boost when opening inventory)
+    - Added LICENSE.txt
+  Bugfixes:
+    - Add hidden flag (not property!) to automatically generated 'disabled' items (artillery and equipment)
+    - Fixed startup crash with technologies containing modded recipe effects
+
+---------------------------------------------------------------------------------------------------
 Version: 0.6.0
 Date: 2019-03-29
   Features:

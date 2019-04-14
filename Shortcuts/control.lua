@@ -80,39 +80,53 @@ local function toggle_rail(player)
 	end
 end
 
-local function update_inventory(event) -- removes spare remotes
-	local item_prototypes = game.item_prototypes
-	local inventory = game.players[event.player_index].get_inventory(defines.inventory.player_main)
-	if inventory and inventory.valid then
-		inventory.remove("artillery-targeting-remote")
-		inventory.remove("artillery-jammer-tool")
-		inventory.remove("discharge-defense-remote")
-		inventory.remove("shortcuts-deconstruction-planner")
-		if item_prototypes["resource-monitor"] then
-			inventory.remove("resource-monitor")
-		end
-		if item_prototypes["outpost-builder"] then
-			inventory.remove("outpost-builder")
-		end
-		if item_prototypes["ion-cannon-targeter"] then
-			inventory.remove("ion-cannon-targeter")
-		end
-		if item_prototypes["max-rate-calculator"] then
-			inventory.remove("max-rate-calculator")
-		end
-		if item_prototypes["module-inserter"] then
-			inventory.remove("module-inserter")
-		end
-	end
-end
+-- local function update_inventory(event) -- removes spare remotes
+	-- local item_prototypes = game.item_prototypes
+	-- local inventory = game.players[event.player_index].get_inventory(defines.inventory.player_main)
+	-- if inventory and inventory.valid then
+		-- if settings.startup["artillery-targeting-remote"].value == true then
+			-- inventory.remove("artillery-targeting-remote")
+		-- end
+		-- if settings.startup["artillery-jammer-remote"].value == true then
+			-- inventory.remove("artillery-jammer-tool")
+		-- end
+		-- if settings.startup["discharge-defense-remote"].value == true then
+			-- inventory.remove("discharge-defense-remote")
+		-- end
+		-- if settings.startup["tree-killer"].value == true then
+			-- inventory.remove("shortcuts-deconstruction-planner")
+		-- end
+		-- if item_prototypes["resource-monitor"] and settings.startup["resource-monitor"].value == true then
+			-- inventory.remove("resource-monitor")
+		-- end
+		-- if item_prototypes["outpost-builder"] and settings.startup["outpost-builder"].value == true then
+			-- inventory.remove("outpost-builder")
+		-- end
+		-- if item_prototypes["ion-cannon-targeter"] and settings.startup["ion-cannon-targeter"].value == true then
+			-- inventory.remove("ion-cannon-targeter")
+		-- end
+		-- if item_prototypes["max-rate-calculator"] and settings.startup["max-rate-calculator"].value == true then
+			-- inventory.remove("max-rate-calculator")
+		-- end
+		-- if item_prototypes["module-inserter"] and settings.startup["module-inserter"].value == true then
+			-- inventory.remove("module-inserter")
+		-- end
+	-- end
+-- end
 
 local function false_shortcuts(player) -- disables things
-	player.set_shortcut_available("night-vision-equipment", false)
-	player.set_shortcut_toggled("night-vision-equipment", false)
-	player.set_shortcut_available("belt-immunity-equipment", false)
-	player.set_shortcut_toggled("belt-immunity-equipment", false)
-	player.set_shortcut_available("active-defense-equipment", false)
-	player.set_shortcut_toggled("active-defense-equipment", false)
+	if settings.startup["night-vision-equipment"].value == true then
+		player.set_shortcut_available("night-vision-equipment", false)
+		player.set_shortcut_toggled("night-vision-equipment", false)
+	end
+	if settings.startup["active-defense-equipment"].value == true then
+		player.set_shortcut_available("active-defense-equipment", false)
+		player.set_shortcut_toggled("active-defense-equipment", false)
+	end
+	if settings.startup["belt-immunity-equipment"].value == true then
+		player.set_shortcut_available("belt-immunity-equipment", false)
+		player.set_shortcut_toggled("belt-immunity-equipment", false)
+	end
 end
 
 local function enable_it(player, equipment, grid, type) -- enables things
@@ -387,7 +401,7 @@ local function shortcut_type(event)
 		end
 	elseif prototype_name == "flashlight-toggle" then
 		toggle_light(game.players[event.player_index])
-		elseif prototype_name == "rail-block-visualization-toggle" then
+	elseif prototype_name == "rail-block-visualization-toggle" then
 		toggle_rail(game.players[event.player_index])
 	elseif prototype_name == "signal-flare" then
 		local player = game.players[event.player_index]
@@ -401,16 +415,26 @@ end
 
 script.on_event(defines.events.on_lua_shortcut, shortcut_type)
 
-script.on_event(defines.events.on_player_main_inventory_changed, update_inventory)
+-- script.on_event(defines.events.on_player_main_inventory_changed, update_inventory)
 
 script.on_event(defines.events.on_player_created, function(event)
 	local player = game.players[event.player_index]
-	player.set_shortcut_toggled("flashlight-toggle", true)
-	player.set_shortcut_toggled("rail-block-visualization-toggle", false)
+	if settings.startup["flashlight-toggle"].value == true then
+		player.set_shortcut_toggled("flashlight-toggle", true)
+	end
+	if settings.startup["rail-block-visualization-toggle"].value == true then
+		player.set_shortcut_toggled("rail-block-visualization-toggle", false)
+	end
 	if not game.active_mods["Nanobots"] then
-		player.set_shortcut_available("night-vision-equipment", false)
-		player.set_shortcut_available("belt-immunity-equipment", false)
-		player.set_shortcut_available("active-defense-equipment", false)
+		if settings.startup["night-vision-equipment"].value == true then
+			player.set_shortcut_available("night-vision-equipment", false)
+		end
+		if settings.startup["active-defense-equipment"].value == true then
+			player.set_shortcut_available("active-defense-equipment", false)
+		end
+		if settings.startup["belt-immunity-equipment"].value == true then
+			player.set_shortcut_available("belt-immunity-equipment", false)
+		end
 	else
 		player.print("WARNING: Shortcuts for modular equipment disabled as Nanobots is installed")
 		player.print("> Use the Nanobots hotkeys instead: \"Ctrl F1 - F7 Will toggle specific modular armor equipment on or off\"")
