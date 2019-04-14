@@ -1,3 +1,11 @@
+--[[ Copyright (c) 2019 npc_strider
+ * For direct use of code or graphics, credit is appreciated and encouraged. See LICENSE.txt for more information.
+ * This mod may contain modified code sourced from base/core Factorio
+ * 
+ * control.lua
+ * Scripts for updating armor, toggling artillery pieces, drawing grids and managing toggles and variables.
+--]]
+
 require("util")
 
 local function update_armor(event)

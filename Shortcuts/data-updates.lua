@@ -1,3 +1,11 @@
+--[[ Copyright (c) 2019 npc_strider
+ * For direct use of code or graphics, credit is appreciated and encouraged. See LICENSE.txt for more information.
+ * This mod may contain modified code sourced from base/core Factorio
+ * 
+ * data-updates.lua
+ * Remote hiding, generation of disabled artillery and equipment, and autogeneration of unsupported modded shortcuts
+--]]
+
 require("shortcuts")
 
 local function hide_the_remote(recipe, technology, item)
