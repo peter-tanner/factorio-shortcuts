@@ -241,11 +241,21 @@ if settings.startup["autogen"].value == true then
 			end
 			if create == true then
 				local icon
-				local icon_size = tool.icon_size
+				local icon_size
 				if tool.icon then
 					icon = tool.icon
-				else
+				elseif tool.icons then
 					icon = tool.icons[1].icon
+				else
+					icon = "__core__/graphics/shoot.png"
+				end
+				
+				if tool.icons and tool.icons[1].icon_size then
+					icon_size = tool.icons[1].icon_size
+				elseif tool.icon_size then
+					icon_size = tool.icon_size
+				else
+					icon_size = 32
 				end
 				local shortcut = {
 					type = "shortcut",
