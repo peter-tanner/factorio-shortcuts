@@ -1,4 +1,10 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.7.3
+Date: 2019-04-15
+  Bugfixes:
+    - Made artillery toggle functional again (Removed hidden flag from disabled artillery ENTITY which was preventing the planner from switching it back to normal)
+
+---------------------------------------------------------------------------------------------------
 Version: 0.7.2
 Date: 2019-04-15
   Bugfixes:

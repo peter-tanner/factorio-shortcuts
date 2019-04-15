@@ -148,12 +148,13 @@ data:extend({
 	}
 })
 
-local disabled_turret = {}
-local disabled_turret_item = {}
-local disabled_gun = {}
-local disable_turret_list = {}
-
 if settings.startup["artillery-jammer-remote"].value == true then
+
+	local disabled_turret = {}
+	local disabled_turret_item = {}
+	local disabled_gun = {}
+	local disable_turret_list = {}
+	
 	if settings.startup["artillery-toggle"].value == "both" then
 		disable_turret_list = {"artillery-wagon", "artillery-turret",}
 	elseif settings.startup["artillery-toggle"].value == "artillery-wagon" then
@@ -179,7 +180,7 @@ if settings.startup["artillery-jammer-remote"].value == true then
 			disabled_turret_item[i].place_result = "disabled-" .. name
 			disabled_turret_item[i].flags = {"hidden"}
 			disabled_turret[i].name = "disabled-" .. name
-			disabled_turret[i].flags = {"hidden"}
+			-- disabled_turret[i].flags = {"hidden"} Turns out flagging an entity (Not ITEM!) as hidden makes it immune to selection-tools...
 			disabled_turret[i].localised_name = {"", {"entity-name." .. entity.name}, " (", {"gui-constant.off"}, ")"}
 			disabled_gun[i] = util.table.deepcopy(data.raw["gun"][gun])
 			disabled_gun[i].name = "disabled-" .. gun

@@ -126,14 +126,17 @@ if settings.startup["rail-block-visualization-toggle"].value == true then
 end
 
 if settings.startup["artillery-jammer-remote"].value == true then
+
 	local disable_turret_list = {}
+	
 	if settings.startup["artillery-toggle"].value == "both" then
-		disable_turret_list = {"artillery-wagon", "artillery-turret",}
+		disable_turret_list = {"artillery-wagon", "artillery-turret"}
 	elseif settings.startup["artillery-toggle"].value == "artillery-wagon" then
 		disable_turret_list = {"artillery-wagon"}
 	elseif settings.startup["artillery-toggle"].value == "artillery-turret" then
 		disable_turret_list = {"artillery-turret"}
 	end
+	
 	data:extend(
 	{
 		{
