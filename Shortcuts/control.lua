@@ -10,7 +10,7 @@ require("util")
 
 local function update_armor(event)
 	local player = game.players[event.player_index]
-	local power_armor = player.get_inventory(defines.inventory.player_armor)
+	local power_armor = player.get_inventory(defines.inventory.character_armor)
 	if power_armor and power_armor ~= nil and power_armor.valid then
 		if power_armor[1].valid_for_read then
 			if power_armor[1].grid and power_armor[1].grid.valid and power_armor[1].grid.width > 0 then
