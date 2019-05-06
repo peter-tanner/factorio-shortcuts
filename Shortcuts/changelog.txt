@@ -1,4 +1,12 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.7.4
+Date: 2019-05-06
+  Bugfixes:
+    - Removed redundant AAI shortcuts (The recipe hiding functionality is still functional for this mod as it still creates recipes even though the shortcut can create infinite remotes)
+    - Fixed valid issue for equipment
+    - Fixed issue with new 0.17.35 player/character naming conventions
+
+---------------------------------------------------------------------------------------------------
 Version: 0.7.3
 Date: 2019-04-15
   Bugfixes:

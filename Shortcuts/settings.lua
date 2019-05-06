@@ -194,6 +194,7 @@ data:extend({
 })
 
 	--	Since we cannot conditionally extend mod settings, we have to implement them whether the mod is enabled or not :(
+	--	This can break the localization of the shortcut if the mod is not installed
 data:extend(
 {
 	{
@@ -202,25 +203,25 @@ data:extend(
 		localised_name = {"", {"item-name.resource-monitor"}, " ", {"gui-mod-info.toggle"}, " (LEGACY YARM)"},
 		localised_description = {"", {""}, "Disable specific shortcuts to free up space for other modded shortcuts, or to slightly increase performance and load time."},
 		setting_type = "startup",
-		default_value = true,
+		default_value = false,
 		order = "zz"
 	},
 	{
 		type = "bool-setting",
 		name = "path-remote-control",
-		localised_name = {"", {"item-name.path-remote-control"}, " ", {"gui-mod-info.toggle"}},
+		localised_name = {"", {"item-name.path-remote-control"}, " ", {"gui-mod-info.toggle"}, " (LEGACY AAI)"},
 		localised_description = {"", {""}, "Disable specific shortcuts to free up space for other modded shortcuts, or to slightly increase performance and load time."},
 		setting_type = "startup",
-		default_value = true,
+		default_value = false,
 		order = "zz"
 	},
 	{
 		type = "bool-setting",
 		name = "unit-remote-control",
-		localised_name = {"", {"item-name.unit-remote-control"}, " ", {"gui-mod-info.toggle"}},
+		localised_name = {"", {"item-name.unit-remote-control"}, " ", {"gui-mod-info.toggle"}, " (LEGACY AAI)"},
 		localised_description = {"", {""}, "Disable specific shortcuts to free up space for other modded shortcuts, or to slightly increase performance and load time."},
 		setting_type = "startup",
-		default_value = true,
+		default_value = false,
 		order = "zz"
 	},
 	{

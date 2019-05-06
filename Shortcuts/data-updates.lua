@@ -54,10 +54,10 @@ if mods["ModuleInserter"] and data.raw["selection-tool"]["module-inserter"] and 
 	hide_the_remote("module-inserter", "construction-robotics", data.raw["selection-tool"]["module-inserter"])
 end
 if mods["aai-programmable-vehicles"] then
-	if settings.startup["unit-remote-control"].value == true and data.raw["selection-tool"]["unit-remote-control"] then
+	if --[[settings.startup["unit-remote-control"].value == true and]] data.raw["selection-tool"]["unit-remote-control"] then
 		hide_the_remote("unit-remote-control", nil, data.raw["selection-tool"]["unit-remote-control"])
 	end
-	if settings.startup["path-remote-control"].value == true and data.raw["selection-tool"]["path-remote-control"] then
+	if --[[settings.startup["path-remote-control"].value == true and]] data.raw["selection-tool"]["path-remote-control"] then
 		hide_the_remote("path-remote-control", nil, data.raw["selection-tool"]["path-remote-control"])
 	end
 end

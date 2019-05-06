@@ -10,7 +10,7 @@ require("util")
 
 local function update_armor(event)
 	local player = game.players[event.player_index]
-	local power_armor = player.get_inventory(defines.inventory.player_armor)
+	local power_armor = player.get_inventory(defines.inventory.character_armor)
 	if power_armor and power_armor ~= nil and power_armor.valid then
 		if power_armor[1].valid_for_read then
 			if power_armor[1].grid and power_armor[1].grid.valid and power_armor[1].grid.width > 0 then
@@ -88,40 +88,6 @@ local function toggle_rail(player)
 	end
 end
 
--- local function update_inventory(event) -- removes spare remotes
-	-- local item_prototypes = game.item_prototypes
-	-- local inventory = game.players[event.player_index].get_inventory(defines.inventory.player_main)
-	-- if inventory and inventory.valid then
-		-- if settings.startup["artillery-targeting-remote"].value == true then
-			-- inventory.remove("artillery-targeting-remote")
-		-- end
-		-- if settings.startup["artillery-jammer-remote"].value == true then
-			-- inventory.remove("artillery-jammer-tool")
-		-- end
-		-- if settings.startup["discharge-defense-remote"].value == true then
-			-- inventory.remove("discharge-defense-remote")
-		-- end
-		-- if settings.startup["tree-killer"].value == true then
-			-- inventory.remove("shortcuts-deconstruction-planner")
-		-- end
-		-- if item_prototypes["resource-monitor"] and settings.startup["resource-monitor"].value == true then
-			-- inventory.remove("resource-monitor")
-		-- end
-		-- if item_prototypes["outpost-builder"] and settings.startup["outpost-builder"].value == true then
-			-- inventory.remove("outpost-builder")
-		-- end
-		-- if item_prototypes["ion-cannon-targeter"] and settings.startup["ion-cannon-targeter"].value == true then
-			-- inventory.remove("ion-cannon-targeter")
-		-- end
-		-- if item_prototypes["max-rate-calculator"] and settings.startup["max-rate-calculator"].value == true then
-			-- inventory.remove("max-rate-calculator")
-		-- end
-		-- if item_prototypes["module-inserter"] and settings.startup["module-inserter"].value == true then
-			-- inventory.remove("module-inserter")
-		-- end
-	-- end
--- end
-
 local function false_shortcuts(player) -- disables things
 	if settings.startup["night-vision-equipment"].value == true then
 		player.set_shortcut_available("night-vision-equipment", false)
@@ -157,14 +123,17 @@ local function reset_state(event, toggle) -- verifies placement of equipment and
 	update_armor(event)
 	local player = game.players[event.player_index]
 	local grid = global.shortcuts_armor[game.players[event.player_index].index]
-	if grid then
+	if grid and grid.valid then
 		local equipment = event.equipment
 		if equipment and toggle == 1 then --place
 			local type = equipment.type
 			if type == "night-vision-equipment" or type == "belt-immunity-equipment" or (type == "active-defense-equipment" and game.equipment_prototypes["disabledinactive-" .. equipment.name] == nil) then
-				for _, equipment in pairs(grid.equipment) do
-					if equipment.valid and equipment.type == type then
-						enable_it(player, equipment, grid, type)
+				local setting = settings.startup[type]
+				if setting and setting.value then
+					for _, equipment in pairs(grid.equipment) do	--	Enable all of a type of equipment, even if only one is placed in the grid.
+						if equipment.valid and equipment.type == type then
+							enable_it(player, equipment, grid, type)
+						end
 					end
 				end
 			end
@@ -172,21 +141,24 @@ local function reset_state(event, toggle) -- verifies placement of equipment and
 			local type = game.equipment_prototypes[equipment].type
 			local name = game.equipment_prototypes[equipment].name
 			if type == "night-vision-equipment" or type == "belt-immunity-equipment" or type == "active-defense-equipment" then
-				local value = false
-				for _, equipment in pairs(grid.equipment) do
-					if equipment.type == type and equipment.valid then
-						if type ~= "active-defense-equipment" then
-							value = true
-							break
-						elseif type == "active-defense-equipment" and game.equipment_prototypes["disabledinactive-" .. equipment.name] == nil then
-							value = true
-							break
+				local setting = settings.startup[type]
+				if setting and setting.value then
+					local value = false
+					for _, equipment in pairs(grid.equipment) do
+						if equipment.type == type and equipment.valid then
+							if type ~= "active-defense-equipment" then
+								value = true
+								break
+							elseif type == "active-defense-equipment" and game.equipment_prototypes["disabledinactive-" .. equipment.name] == nil then
+								value = true
+								break
+							end
 						end
 					end
-				end
-				if value == false then
-					player.set_shortcut_available(type, false)
-					player.set_shortcut_toggled(type, false)
+					if value == false then
+						player.set_shortcut_available(type, false)
+						player.set_shortcut_toggled(type, false)
+					end
 				end
 			end
 		elseif toggle == 0 then --armor place
@@ -194,7 +166,10 @@ local function reset_state(event, toggle) -- verifies placement of equipment and
 			for _, equipment in pairs(grid.equipment) do
 				local type = equipment.type
 				if equipment.valid and type == "night-vision-equipment" or type == "belt-immunity-equipment" or (type == "active-defense-equipment" and game.equipment_prototypes["disabledinactive-" .. equipment.name] == nil) then
-					enable_it(player, equipment, grid, equipment.type)
+					local setting = settings.startup[type]
+					if setting and setting.value then
+						enable_it(player, equipment, grid, equipment.type)
+					end
 				end
 			end
 		end
