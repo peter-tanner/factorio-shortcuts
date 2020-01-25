@@ -132,7 +132,7 @@ data:extend({
 		type = "virtual-signal", -- TODO: placeholder, when removing, remember to remove localised name too!
 		name = "signal-danger",
 		localised_name = {"gui-alert-tooltip.title"},
-		icon = "__core__/graphics/danger-icon.png",
+		icon = "__Shortcuts__/graphics/danger-icon.png",
 		icon_size = 64,
 		subgroup = "virtual-signal-color",
 		order = "d[colors]-[9danger]",
@@ -141,7 +141,7 @@ data:extend({
 		type = "virtual-signal",
 		name = "signal-disabled",
 		localised_name = {"gui-alert-tooltip.title"},
-		icon = "__core__/graphics/destroyed-icon.png",
+		icon = "__Shortcuts__/graphics/destroyed-icon.png",
 		icon_size = 64,
 		subgroup = "virtual-signal-color",
 		order = "d[colors]-[9disabled]",
